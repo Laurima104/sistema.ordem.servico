@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.sistem.os.entity.OS;
 import com.sistem.os.entity.Tecnico;
 import com.sistem.os.repository.TecnicoRepository;
 

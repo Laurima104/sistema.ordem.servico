@@ -8,6 +8,8 @@ import com.sistem.os.enums.StatusOS;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,15 +25,17 @@ public class OS {
     private Long id;
     @Column(nullable = false, length = 150)
     private String descricao;
-    @Column(nullable = false)
+    @Column(name = "data_abertura",nullable = false)
     private LocalDateTime dataAbertura;
-    @Column(nullable = false)
+    @Column(name = "data_fechamento")
     private LocalDateTime dataFechamento;
-    @Column(nullable = false)
+    @Column(precision = 10, scale = 2)
     private BigDecimal valor;
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private StatusOS status;
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
     private Prioridade prioridade;
 
     @ManyToOne
