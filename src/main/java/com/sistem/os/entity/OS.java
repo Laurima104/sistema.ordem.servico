@@ -25,7 +25,7 @@ public class OS {
     private Long id;
     @Column(nullable = false, length = 150)
     private String descricao;
-    @Column(name = "data_abertura",nullable = false)
+    @Column(name = "data_abertura", nullable = false)
     private LocalDateTime dataAbertura;
     @Column(name = "data_fechamento")
     private LocalDateTime dataFechamento;
@@ -42,7 +42,7 @@ public class OS {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
     @ManyToOne
-    @JoinColumn(name = "tecnico_id", nullable = false)
+    @JoinColumn(name = "tecnico_id")
     private Tecnico tecnico;
 
     public Long getId() {

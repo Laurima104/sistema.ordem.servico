@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sistem.os.entity.OS;
+import com.sistem.os.enums.Prioridade;
 import com.sistem.os.enums.StatusOS;
 import com.sistem.os.service.OSService;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,9 +29,12 @@ public class OSController {
     }
 
     @GetMapping
-    public List<OS> listar(@RequestParam(required = false) StatusOS statusOS) {
+    public List<OS> listar(@RequestParam(required = false) StatusOS statusOS,
+            @RequestParam(required = false) Prioridade prioridade) {
         if (statusOS != null) {
             return osService.listPorStatus(statusOS);
+        } else if (prioridade != null) {
+            return osService.listarPorPrioridade(prioridade);
         }
         return osService.listarTodas();
     }
