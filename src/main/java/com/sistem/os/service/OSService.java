@@ -73,8 +73,8 @@ public class OSService {
         }
     }
 
-    public OS atribuirTecnico(Long osId, Long tecnicoId) {
-        OS os = listPorId(osId);
+    public OS atribuirTecnico(Long id, Long tecnicoId) {
+        OS os = listPorId(id);
         validarOsNaoFinalizada(os);
 
         Tecnico tecnico = tecnicoService.buscarPorId(tecnicoId);
@@ -90,10 +90,18 @@ public class OSService {
         }
     }
 
+    private void validarVlrMaiorQueZero(BigDecimal vlr) {
+        if (!(vlr.compareTo(BigDecimal.ZERO) > 0)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "O Valor da OS deve ser maior do que 0,00");
+        }
+    }
+
     public OS concluirOs(Long osId, BigDecimal valor) {
         OS os = listPorId(osId);
         validarOsNaoFinalizada(os);
         validarTecnicoAtribuido(os);
+        validarVlrMaiorQueZero(valor);
 
         os.setValor(valor);
         os.setDataFechamento(LocalDateTime.now());

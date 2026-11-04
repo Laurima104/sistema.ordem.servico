@@ -40,8 +40,8 @@ public class OSController {
     }
 
     @GetMapping("/{id}")
-    public OS buscar(@PathVariable Long osId) {
-        return osService.listPorId(osId);
+    public OS buscar(@PathVariable Long id) {
+        return osService.listPorId(id);
     }
 
     @GetMapping("/cliente/{clienteId}")

@@ -1,7 +1,10 @@
 package com.sistem.os.service;
 
 import com.sistem.os.entity.Cliente;
+import com.sistem.os.entity.OS;
 import com.sistem.os.repository.ClienteRepository;
+import com.sistem.os.repository.OSRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -10,6 +13,7 @@ import java.util.List;
 @Service
 public class ClienteService {
     private final ClienteRepository clienteRepository;
+    private OSService osService;
 
     public ClienteService(ClienteRepository clienteRepository) {
         this.clienteRepository = clienteRepository;
@@ -42,9 +46,17 @@ public class ClienteService {
         return clienteRepository.save(cliente);
     }
 
-    public void excluir(Long id) {
-        Cliente cliente = buscarPorId(id);
-        clienteRepository.delete(cliente);
+    private List<OS> validarClienteComOs(Long id) {
+        return osService.listarPorCliente(id);
     }
 
+    public void excluir(Long id) {
+        List<OS> os = validarClienteComOs(id);
+        Cliente cliente = buscarPorId(id);
+        if (!os.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Cliente ja possui vinculo com Ordens de Serviço");
+        }
+        clienteRepository.delete(cliente);
+    }
 }
