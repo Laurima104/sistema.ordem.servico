@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.sistem.os.dto.os.OSRequestDTO;
+import com.sistem.os.dto.os.OSResponseDTO;
 import com.sistem.os.entity.Cliente;
 import com.sistem.os.entity.OS;
 import com.sistem.os.entity.Tecnico;
@@ -49,21 +51,21 @@ public class OSService {
                         HttpStatus.NOT_FOUND, "Ordem de Serviço não encotrada: " + id));
     }
 
-    private Cliente validarClienteCadastrado(OS os) {
-        if (os.getCliente() == null || os.getCliente().getId() == null) {
+    private Cliente validarClienteCadastrado(OSRequestDTO os) {
+        if (os.idCliente() == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Informe o ID do cliente");
         }
-        return clienteService.buscarPorId(os.getCliente().getId());
+        return clienteService.buscarPorId(os.idCliente());
     }
 
-    public OS abrirOs(OS os) {
-        Cliente cliente = validarClienteCadastrado(os);
-
+    public OSResponseDTO abrirOs(OSRequestDTO osRequest) {
+        Cliente cliente = validarClienteCadastrado(osRequest);
+        OS os = new OS();
         os.setCliente(cliente);
         os.setDataAbertura(LocalDateTime.now());
         os.setStatus(StatusOS.ABERTA);
-        return osRepository.save(os);
+        return OSResponseDTO.from(osRepository.save(os));
     }
 
     private void validarOsNaoFinalizada(OS os) {
