@@ -1,6 +1,7 @@
 package com.sistem.os.service;
 
 import java.math.BigDecimal;
+import java.net.BindException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -59,19 +60,26 @@ public class OSService {
         return clienteService.buscarPorId(os.idCliente());
     }
 
-    public OSResponseDTO abrirOs(OSRequestDTO osRequest) {
+    public OS abrirOs(OSRequestDTO osRequest) {
         Cliente cliente = validarClienteCadastrado(osRequest);
         OS os = new OS();
+        os.setDescricao(osRequest.descricao());
         os.setCliente(cliente);
+        os.setPrioridade(osRequest.prioridade());
         os.setDataAbertura(LocalDateTime.now());
         os.setStatus(StatusOS.ABERTA);
-        return OSResponseDTO.from(osRepository.save(os));
+        return osRepository.save(os);
     }
 
     private void validarOsNaoFinalizada(OS os) {
         if (os.getStatus() == StatusOS.CONCLUIDA || os.getStatus() == StatusOS.CANCELADA) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "A OS " + os.getId() + " ja esta  " + os.getStatus());
+            ResponseStatusException  erro = new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "A OS " + os.getId() + " ja esta  " + os.getStatus()
+            );
+
+            System.out.println(erro.getReason());
+            
+            throw erro;
         }
     }
 

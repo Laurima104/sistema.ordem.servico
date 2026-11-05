@@ -35,45 +35,57 @@ public class OSController {
     }
 
     @GetMapping
-    public List<OS> listar(@RequestParam(required = false) StatusOS statusOS,
+    public List<OSResponseDTO> listar(@RequestParam(required = false) StatusOS statusOS,
             @RequestParam(required = false) Prioridade prioridade) {
         if (statusOS != null) {
-            return osService.listPorStatus(statusOS);
+            return osService.listPorStatus(statusOS)
+                .stream()
+                .map(OSResponseDTO::from)
+                .toList();
         } else if (prioridade != null) {
-            return osService.listarPorPrioridade(prioridade);
+            return osService.listarPorPrioridade(prioridade)
+                .stream()
+                .map(OSResponseDTO::from)
+                .toList();
         }
-        return osService.listarTodas();
+        return osService.listarTodas()
+            .stream()
+            .map(OSResponseDTO::from)
+            .toList();
     }
 
     @GetMapping("/{id}")
-    public OS buscar(@PathVariable Long id) {
-        return osService.listPorId(id);
+    public OSResponseDTO buscar(@PathVariable Long id) {
+        return OSResponseDTO.from(osService.listPorId(id));
     }
 
     @GetMapping("/cliente/{clienteId}")
-    public List<OS> listarPorCliente(@PathVariable Long clienteId) {
-        return osService.listarPorCliente(clienteId);
+    public List<OSResponseDTO> listarPorCliente(@PathVariable Long clienteId) {
+        return osService.listarPorCliente(clienteId)
+            .stream()
+            .map(OSResponseDTO::from)
+            .toList();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<OSResponseDTO> abrirOs(@RequestBody @Valid OSRequestDTO os) {
-        OSResponseDTO resposta = osService.abrirOs(os);
-        return ResponseEntity.status(201).body(resposta);
+        OS resposta = osService.abrirOs(os);
+        return ResponseEntity.status(201).body(OSResponseDTO.from(resposta));
     }
 
     @PutMapping("/{id}/tecnico/{tecnicoId}")
-    public OS atribuirTecnico(@PathVariable Long id, @PathVariable Long tecnicoId) {
-        return osService.atribuirTecnico(id, tecnicoId);
+    public OSResponseDTO atribuirTecnico(@PathVariable Long id, @PathVariable Long tecnicoId) {
+        return OSResponseDTO.from(osService.atribuirTecnico(id, tecnicoId));
     }
 
     @PutMapping("/{id}/concluir")
-    public OS concluirOs(@PathVariable Long id, @RequestParam(required = false) BigDecimal valor) {
-        return osService.concluirOs(id, valor);
+    public OSResponseDTO concluirOs(@PathVariable Long id, @RequestParam(required = false) BigDecimal valor) {
+        return OSResponseDTO.from(osService.concluirOs(id, valor));
     }
 
     @PutMapping("/{id}/cancelar")
-    public OS cancelarOS(@PathVariable Long id) {
-        return osService.cancelarOs(id);
+    public OSResponseDTO cancelarOS(@PathVariable Long id) {
+        return OSResponseDTO.from(osService.cancelarOs(id));
     }
 }

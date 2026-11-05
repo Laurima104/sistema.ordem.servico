@@ -1,8 +1,13 @@
 package com.sistem.os.controller;
 
+import com.sistem.os.dto.cliente.ClienteResponseDTO;
 import com.sistem.os.entity.Cliente;
 import com.sistem.os.service.ClienteService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -17,30 +22,32 @@ public class ClienteController {
 
     // GET /clientes
     @GetMapping
-    public List<Cliente> listar() {
-        return clienteService.listarTodos();
+    public List<ClienteResponseDTO> listar() {
+        return clienteService.listarTodos()
+            .stream()
+            .map(ClienteResponseDTO::from)
+            .toList();
     }
 
     // GET /clientes/1
     @GetMapping("/{id}")
-    public Cliente buscar(@PathVariable Long id) {
-        return clienteService.buscarPorId(id);
+    public ClienteResponseDTO buscar(@PathVariable Long id) {
+        return ClienteResponseDTO.from(clienteService.buscarPorId(id));
     }
 
     // POST /clientes
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cliente cadastrar(@RequestBody Cliente cliente) {
-        return clienteService.salvar(cliente);
+    public ResponseEntity<ClienteResponseDTO> cadastrar(@RequestBody @Valid ClienteResponseDTO cliente) {
+        Cliente cli = clienteService.salvar(cliente);
+        return ResponseEntity.status(201).body(ClienteResponseDTO.from(cli));
     }
 
     // PUT /clientes/1
     @PutMapping("/{id}")
-    public Cliente atualizar(@PathVariable Long id,
-
-            @RequestBody Cliente cliente) {
-
-        return clienteService.atualizar(id, cliente);
+    public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ClienteResponseDTO cliente) {
+        Cliente cli = clienteService.atualizar(id, cliente);
+        return ResponseEntity.status(201).body(ClienteResponseDTO.from(cli));
     }
 
     // DELETE /clientes/1

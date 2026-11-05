@@ -1,9 +1,9 @@
 package com.sistem.os.service;
 
+import com.sistem.os.dto.cliente.ClienteResponseDTO;
 import com.sistem.os.entity.Cliente;
 import com.sistem.os.entity.OS;
 import com.sistem.os.repository.ClienteRepository;
-import com.sistem.os.repository.OSRepository;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,19 +30,25 @@ public class ClienteService {
     }
 
     // REGRA 1: não pode existir dois clientes com o mesmo CPF
-    public Cliente salvar(Cliente cliente) {
-        if (clienteRepository.existsByCpf(cliente.getCpf())) {
+    public Cliente salvar(ClienteResponseDTO cliente) {
+        Cliente cli = new Cliente();
+        cli.setNome(cliente.nome());
+        cli.setCpf(cliente.cpf());
+        cli.setEmail(cliente.email());
+        cli.setTelefone(cliente.telefone());
+        if (clienteRepository.existsByCpf(cli.getCpf())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Já existe cliente com este CPF");
+        } else {
+            return clienteRepository.save(cli);
         }
-        return clienteRepository.save(cliente);
     }
 
-    public Cliente atualizar(Long id, Cliente dados) {
+    public Cliente atualizar(Long id, ClienteResponseDTO dados) {
         Cliente cliente = buscarPorId(id);
-        cliente.setNome(dados.getNome());
-        cliente.setTelefone(dados.getTelefone());
-        cliente.setEmail(dados.getEmail());
+        cliente.setNome(dados.nome());
+        cliente.setTelefone(dados.telefone());
+        cliente.setEmail(dados.email());
         return clienteRepository.save(cliente);
     }
 
