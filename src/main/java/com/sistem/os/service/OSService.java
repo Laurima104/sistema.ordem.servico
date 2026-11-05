@@ -1,7 +1,6 @@
 package com.sistem.os.service;
 
 import java.math.BigDecimal;
-import java.net.BindException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.sistem.os.dto.os.OSRequestDTO;
-import com.sistem.os.dto.os.OSResponseDTO;
 import com.sistem.os.entity.Cliente;
 import com.sistem.os.entity.OS;
 import com.sistem.os.entity.Tecnico;
